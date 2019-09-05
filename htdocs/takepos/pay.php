@@ -278,6 +278,12 @@ foreach($action_buttons as $button){
 	<button type="button" class="<?php echo $newclass;?>" onclick="<?php echo $button["function"];?>"><span <?php echo $button["span"];?>><?php echo $button["text"];?></span></button>
 <?php
 }
+
+
+
+
+	<button type="button" class="calcbutton2" onclick="Validate('dif');"><?php echo "Différé"; ?></button>
+	
 ?>
 </div>
 
