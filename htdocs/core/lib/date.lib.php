@@ -606,25 +606,24 @@ function dol_get_first_day_week($day, $month, $year, $gm = false)
  *  @see num_between_day(), num_open_day()
  */
 function num_public_holiday($timestampStart, $timestampEnd, $countrycode = 'FR', $lastday = 0)
-{
-	global $conf;
+{global $conf;
 
 	$nbFerie = 0;
+
 
 	// Check to ensure we use correct parameters
 	if ((($timestampEnd - $timestampStart) % 86400) != 0) return 'ErrorDates must use same hours and must be GMT dates';
 
-	$i=0;
-	while (( ($lastday == 0 && $timestampStart < $timestampEnd) || ($lastday && $timestampStart <= $timestampEnd) )
-	    && ($i < 50000))		// Loop end when equals (Test on i is a security loop to avoid infinite loop)
-	{
-		$ferie=false;
-		$countryfound=0;
-		$includesaturdayandsunday=1;
+$i=0;
+while (( ($lastday == 0 && $timestampStart < $timestampEnd) || ($lastday && $timestampStart <= $timestampEnd) )
+&& ($i < 50000)) // Loop end when equals (Test on i is a security loop to avoid infinite loop)
+{
+$ferie=false;
+$countryfound=0;
+$includesaturdayandsunday=1;
+$includesaturday=0; (à mettre à 1 si samedi férié)
+$includesunday=1; (à mettre à 0 si dimanche non férié
 
-		$jour  = date("d", $timestampStart);
-		$mois  = date("m", $timestampStart);
-		$annee = date("Y", $timestampStart);
 
 
 		// Check into var $conf->global->HOLIDAY_MORE_DAYS   MM-DD,YYYY-MM-DD, ...
@@ -835,6 +834,12 @@ function num_public_holiday($timestampStart, $timestampEnd, $countrycode = 'FR',
 		    $mois_ch = date("m", $date_ch);
 		    if($jour_ch == $jour && $mois_ch == $mois) $ferie=true;
 		    // Christi Himmelfahrt
+			if ($includesaturday || $includesunday)
+{
+$jour_julien = unixtojd($timestampStart);
+$jour_semaine = jddayofweek($jour_julien, 0);
+if ($includesaturday && $jour_semaine == 6) $ferie=true;
+if ($includesunday && $jour_semaine == 0) $ferie=true;
 
 		    // Pfingsten (50 days after easter sunday)
     $date_pentecote = mktime(
