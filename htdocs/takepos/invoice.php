@@ -189,11 +189,14 @@ if ($action == 'valid' && $user->rights->facture->creer)
 	}
 
 	// Add the payment
+	 if($pay!='dif') //si mode de reglement different de dif (différé)
+	{
 	$payment=new Paiement($db);
 	$payment->datepaye = $now;
 	$payment->fk_account = $bankaccount;
 	$payment->amounts[$invoice->id] = $amountofpayment;
-
+	}
+	
 	// If user has not used change control, add total invoice payment
 	if ($amountofpayment == 0) $payment->amounts[$invoice->id] = $invoice->total_ttc;
 
@@ -720,13 +723,19 @@ if ($_SESSION["basiclayout"]==1 && $mobilepage=="invoice")
 	print '</div>';
 }
 
-if ($invoice->socid != $conf->global->{'CASHDESK_ID_THIRDPARTY'.$_SESSION["takeposterminal"]})
-{
-    $soc = new Societe($db);
-    if ($invoice->socid > 0) $soc->fetch($invoice->socid);
-    else $soc->fetch($conf->global->{'CASHDESK_ID_THIRDPARTY'.$_SESSION["takeposterminal"]});
-    print '<!-- Show customer --><p style="font-size:120%;" class="right">';
-    print $langs->trans("Customer").': '.$soc->name;
+if ($invoice->socid!=$conf->global->CASHDESK_ID_THIRDPARTY){
+        $soc = new Societe($db);
+        $soc->id = $invoice->socid;
+        $soc->fetch($invoice->socid);
+        print '<p style="font-size:120%;" align="right">(';
+        print $soc->name;
+        $tmpencours = $soc->getOutstandingBills(); //récuperer l'encours client
+        $outstandingOpened=$tmpencours['opened'];
+        print ')';
+        if($outstandingOpened>0)
+            print " Encours : ".$outstandingOpened;
+        print '</p>';
+    }
 
 	$constantforkey = 'CASHDESK_NO_DECREASE_STOCK'.$_SESSION["takeposterminal"];
 	if (! empty($conf->stock->enabled) && $conf->global->$constantforkey != "1")
