@@ -137,6 +137,13 @@ class modProjet extends DolibarrModules
 		$this->const[$r][4] = 0;
 		$r++;
 
+		
+		//TABS
+	    $this->tabs[] = array('data'=>'project:+tabname1:Interventions:mylangfile@fichinter:1:/fichinter/card.php?id=__ID__');
+		
+		$this->tabs[] = array('data'=>'project:+tabname1:Contrat:mylangfile@contract:1:/contrat/card.php?id=__ID__');
+        
+   
 		// Boxes
 		$this->boxes = array();
 		$r=0;
