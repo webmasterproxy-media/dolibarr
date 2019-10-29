@@ -172,4 +172,25 @@ if (! empty($conf->global->TAKEPOS_FOOTER))
     window.print();
 </script>
 </body>
+Vous avez été servi par: <?php
+
+
+
+
+$id_user = $object->user_author;
+$userL=new User($db);
+$userL->fetch($id_user);
+
+print $userL->firstname."<br>";
+
+
+print $userL->login;
+
+
+
+
+$mystring=$langs->getLabelFromNumber($total_ttc,1);
+
+print $mystring;
+
 </html>
